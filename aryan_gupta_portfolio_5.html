@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aryan Gupta — Developer Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080808;
+  --black2:#101010;
+  --black3:#181818;
+  --black4:#222222;
+  --silver:#c0c0c0;
+  --silver2:#a0a0a0;
+  --silver3:#707070;
+  --silver4:#404040;
+  --white:#f0f0f0;
+  --accent:#e8e8e8;
+  --glow:rgba(192,192,192,0.15);
+  --display:'Bebas Neue',cursive;
+  --body:'DM Sans',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--body);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* Custom cursor */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--silver);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s,width 0.2s,height 0.2s,background 0.2s;
+  mix-blend-mode:difference;
+}
+#cursor-follower{
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(192,192,192,0.4);
+  border-radius:50%;pointer-events:none;
+  z-index:9998;transform:translate(-50%,-50%);
+  transition:transform 0.15s ease,left 0.1s ease,top 0.1s ease;
+}
+body:hover #cursor{transform:translate(-50%,-50%) scale(1)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 4rem;height:64px;
+  background:rgba(8,8,8,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(192,192,192,0.08);
+}
+.nav-logo{
+  font-family:var(--display);
+  font-size:22px;letter-spacing:0.1em;
+  color:var(--silver);
+}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver3);text-decoration:none;
+  letter-spacing:0.1em;text-transform:uppercase;
+  transition:color 0.2s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--silver);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.3s;
+}
+.nav-links a:hover{color:var(--white)}
+.nav-links a:hover::after{transform:scaleX(1)}
+
+/* PAGE SECTIONS */
+.page{min-height:100vh;position:relative}
+
+/* ====== HERO ====== */
+#hero{
+  position:relative;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  overflow:hidden;
+  padding:0;
+}
+#three-canvas{
+  position:absolute;inset:0;
+  z-index:0;opacity:0.7;
+}
+.hero-content{
+  position:relative;z-index:2;
+  padding:0 4rem;
+  margin-top:64px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  min-height:100vh;
+  gap:60px;
+}
+.hero-left{}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--silver3);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+  opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-eyebrow::before{
+  content:'';width:32px;height:1px;background:var(--silver3);
+}
+.hero-name{
+  font-family:var(--display);
+  font-size:clamp(56px,8vw,96px);
+  line-height:0.95;
+  letter-spacing:0.02em;
+  color:var(--white);
+  margin-bottom:10px;
+  opacity:0;animation:fadeUp 0.8s 0.4s forwards;
+}
+.hero-name span{
+  display:block;
+  background:linear-gradient(135deg,#fff 0%,#c0c0c0 50%,#808080 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-role{
+  font-family:var(--mono);
+  font-size:14px;color:var(--silver2);
+  letter-spacing:0.08em;margin-bottom:28px;
+  opacity:0;animation:fadeUp 0.8s 0.6s forwards;
+}
+.hero-desc{
+  font-size:15px;color:var(--silver3);
+  line-height:1.85;max-width:460px;
+  margin-bottom:40px;font-weight:300;
+  opacity:0;animation:fadeUp 0.8s 0.8s forwards;
+}
+.hero-cta{
+  display:flex;gap:16px;
+  opacity:0;animation:fadeUp 0.8s 1s forwards;
+}
+.btn-silver{
+  background:linear-gradient(135deg,#d0d0d0,#888);
+  color:#080808;border:none;
+  padding:14px 32px;border-radius:4px;
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:none;text-decoration:none;
+  display:inline-block;font-weight:500;
+  transition:all 0.3s;
+}
+.btn-silver:hover{
+  background:linear-gradient(135deg,#fff,#a0a0a0);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(192,192,192,0.2);
+}
+.btn-outline{
+  background:transparent;color:var(--silver);
+  border:1px solid rgba(192,192,192,0.3);
+  padding:14px 32px;border-radius:4px;
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:none;text-decoration:none;display:inline-block;
+  transition:all 0.3s;
+}
+.btn-outline:hover{
+  border-color:var(--silver);
+  background:rgba(192,192,192,0.06);
+}
+
+/* Hero right — 3D model canvas area */
+.hero-right{
+  position:relative;height:600px;
+  display:flex;align-items:center;justify-content:center;
+}
+#model-canvas{
+  width:100%;height:100%;
+  border-radius:8px;
+}
+
+/* Scroll indicator */
+.scroll-indicator{
+  position:absolute;bottom:40px;left:50%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  gap:8px;z-index:2;
+  font-family:var(--mono);font-size:10px;
+  color:var(--silver4);letter-spacing:0.12em;
+  text-transform:uppercase;
+  opacity:0;animation:fadeUp 0.8s 1.4s forwards;
+}
+.scroll-line{
+  width:1px;height:50px;
+  background:linear-gradient(to bottom,var(--silver4),transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:0.3;transform:scaleY(1)}
+  50%{opacity:1;transform:scaleY(1.15)}
+}
+
+/* ====== ABOUT ====== */
+#about{
+  padding:120px 4rem;
+  position:relative;
+}
+#about::before{
+  content:'02';
+  position:absolute;right:4rem;top:80px;
+  font-family:var(--display);font-size:200px;
+  color:rgba(255,255,255,0.02);
+  pointer-events:none;letter-spacing:-0.05em;
+}
+.section-header{
+  display:flex;align-items:center;gap:20px;
+  margin-bottom:60px;
+}
+.section-num{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver3);letter-spacing:0.15em;
+}
+.section-title{
+  font-family:var(--display);
+  font-size:clamp(36px,5vw,60px);
+  letter-spacing:0.04em;color:var(--white);
+}
+.section-line{
+  flex:1;height:1px;
+  background:linear-gradient(to right,rgba(192,192,192,0.3),transparent);
+}
+.about-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:80px;align-items:start;
+}
+.about-text p{
+  font-size:15px;color:var(--silver2);
+  line-height:1.9;margin-bottom:22px;font-weight:300;
+}
+.about-text p strong{color:var(--white);font-weight:500}
+.about-details{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin-top:32px;
+}
+.detail-item{
+  padding:16px;
+  background:var(--black2);
+  border:1px solid rgba(192,192,192,0.07);
+  border-radius:6px;
+  transition:border-color 0.3s;
+}
+.detail-item:hover{border-color:rgba(192,192,192,0.2)}
+.detail-label{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--silver3);margin-bottom:6px;
+}
+.detail-value{font-size:13px;color:var(--white);font-weight:500}
+
+/* Education cards */
+.education-cards{display:flex;flex-direction:column;gap:16px}
+.edu-card{
+  padding:24px;
+  background:var(--black2);
+  border:1px solid rgba(192,192,192,0.07);
+  border-left:2px solid var(--silver4);
+  border-radius:6px;
+  transition:all 0.3s;
+}
+.edu-card:hover{
+  border-left-color:var(--silver);
+  background:var(--black3);
+}
+.edu-degree{font-size:14px;font-weight:500;color:var(--white);margin-bottom:4px}
+.edu-school{font-size:13px;color:var(--silver2);margin-bottom:8px}
+.edu-meta{
+  display:flex;gap:16px;
+  font-family:var(--mono);font-size:11px;color:var(--silver3);
+}
+.edu-cgpa{
+  background:rgba(192,192,192,0.07);
+  border-radius:4px;padding:2px 8px;
+  color:var(--silver);
+}
+
+/* ====== SKILLS ====== */
+#skills{
+  padding:120px 4rem;
+  background:var(--black2);
+  position:relative;overflow:hidden;
+}
+#skills-canvas{
+  position:absolute;inset:0;z-index:0;opacity:0.5;
+}
+.skills-inner{position:relative;z-index:1}
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;margin-top:60px;
+}
+@media(max-width:768px){.skills-grid{grid-template-columns:1fr}}
+.skill-category{
+  padding:32px;
+  background:rgba(8,8,8,0.8);
+  border:1px solid rgba(192,192,192,0.08);
+  border-radius:8px;
+  transition:all 0.3s;
+  backdrop-filter:blur(10px);
+}
+.skill-category:hover{
+  border-color:rgba(192,192,192,0.2);
+  transform:translateY(-4px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+}
+.skill-cat-title{
+  font-family:var(--mono);font-size:11px;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--silver3);margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.skill-cat-title::before{
+  content:'';width:20px;height:1px;background:var(--silver3);
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{
+  font-family:var(--mono);font-size:11px;
+  padding:6px 12px;
+  border-radius:4px;
+  background:rgba(192,192,192,0.05);
+  border:1px solid rgba(192,192,192,0.12);
+  color:var(--silver2);
+  transition:all 0.2s;cursor:default;
+  letter-spacing:0.04em;
+}
+.skill-tag:hover{
+  background:rgba(192,192,192,0.12);
+  border-color:rgba(192,192,192,0.3);
+  color:var(--white);
+}
+
+/* ====== PROJECTS ====== */
+#projects{
+  padding:120px 4rem;
+  position:relative;
+}
+#projects::before{
+  content:'04';
+  position:absolute;left:3rem;top:80px;
+  font-family:var(--display);font-size:200px;
+  color:rgba(255,255,255,0.02);
+  pointer-events:none;
+}
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:24px;margin-top:60px;
+}
+@media(max-width:768px){.projects-grid{grid-template-columns:1fr}}
+.project-card{
+  background:var(--black2);
+  border:1px solid rgba(192,192,192,0.07);
+  border-radius:10px;
+  overflow:hidden;
+  transition:all 0.4s;
+  position:relative;
+}
+.project-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--silver3),transparent);
+  transform:scaleX(0);transform-origin:center;
+  transition:transform 0.4s;
+}
+.project-card:hover::before{transform:scaleX(1)}
+.project-card:hover{
+  border-color:rgba(192,192,192,0.18);
+  transform:translateY(-4px);
+  box-shadow:0 24px 60px rgba(0,0,0,0.6);
+}
+.project-visual{
+  height:180px;
+  background:var(--black3);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.project-3d-canvas{
+  width:100%;height:100%;
+}
+.project-body{padding:28px}
+.project-label{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--silver3);margin-bottom:10px;
+}
+.project-name{
+  font-size:20px;font-weight:500;
+  color:var(--white);margin-bottom:10px;
+  letter-spacing:-0.01em;
+}
+.project-desc{
+  font-size:13px;color:var(--silver3);
+  line-height:1.8;margin-bottom:20px;font-weight:300;
+}
+.project-highlights{
+  list-style:none;margin-bottom:20px;
+}
+.project-highlights li{
+  font-size:12px;color:var(--silver2);
+  padding:4px 0;
+  padding-left:16px;
+  position:relative;line-height:1.7;
+}
+.project-highlights li::before{
+  content:'—';position:absolute;left:0;
+  color:var(--silver4);
+}
+.project-stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.project-stack span{
+  font-family:var(--mono);font-size:10px;
+  padding:3px 9px;
+  background:rgba(192,192,192,0.05);
+  border:1px solid rgba(192,192,192,0.1);
+  border-radius:3px;color:var(--silver3);
+}
+.project-links{display:flex;gap:12px}
+.proj-link{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver2);text-decoration:none;
+  letter-spacing:0.06em;
+  border-bottom:1px solid rgba(192,192,192,0.2);
+  padding-bottom:2px;
+  transition:color 0.2s,border-color 0.2s;
+}
+.proj-link:hover{color:var(--white);border-color:var(--white)}
+
+/* ====== EXPERIENCE ====== */
+#experience{
+  padding:120px 4rem;
+  background:var(--black2);
+}
+.timeline{
+  margin-top:60px;
+  position:relative;
+  padding-left:40px;
+}
+.timeline::before{
+  content:'';position:absolute;
+  left:0;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,rgba(192,192,192,0.3),transparent);
+}
+.timeline-item{
+  position:relative;margin-bottom:48px;
+}
+.timeline-item::before{
+  content:'';position:absolute;
+  left:-44px;top:6px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--silver3);
+  border:2px solid var(--black2);
+  transition:background 0.3s;
+}
+.timeline-item:hover::before{background:var(--white)}
+.timeline-meta{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver3);letter-spacing:0.08em;
+  margin-bottom:8px;
+}
+.timeline-title{
+  font-size:17px;font-weight:500;
+  color:var(--white);margin-bottom:4px;
+}
+.timeline-org{
+  font-size:13px;color:var(--silver2);
+  margin-bottom:14px;
+}
+.timeline-list{list-style:none}
+.timeline-list li{
+  font-size:13px;color:var(--silver3);
+  padding:4px 0;padding-left:16px;
+  position:relative;line-height:1.7;font-weight:300;
+}
+.timeline-list li::before{content:'›';position:absolute;left:0;color:var(--silver4)}
+
+/* ====== CERTIFICATIONS ====== */
+#certifications{
+  padding:120px 4rem;
+  position:relative;
+}
+.certs-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;margin-top:60px;
+}
+@media(max-width:640px){.certs-grid{grid-template-columns:1fr}}
+.cert-card{
+  padding:24px 28px;
+  background:var(--black2);
+  border:1px solid rgba(192,192,192,0.07);
+  border-radius:8px;
+  display:flex;align-items:center;gap:20px;
+  transition:all 0.3s;
+}
+.cert-card:hover{
+  border-color:rgba(192,192,192,0.2);
+  background:var(--black3);
+}
+.cert-icon{
+  width:44px;height:44px;flex-shrink:0;
+  border-radius:8px;
+  background:rgba(192,192,192,0.07);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.cert-info{}
+.cert-name{
+  font-size:14px;font-weight:500;
+  color:var(--white);margin-bottom:4px;
+}
+.cert-org{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver3);letter-spacing:0.06em;
+}
+
+/* ====== CONTACT ====== */
+#contact{
+  padding:120px 4rem;
+  background:var(--black2);
+  position:relative;overflow:hidden;
+}
+#contact-canvas{
+  position:absolute;inset:0;z-index:0;opacity:0.4;
+}
+.contact-inner{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:start;
+}
+@media(max-width:768px){.contact-inner{grid-template-columns:1fr}}
+.contact-big{
+  font-family:var(--display);
+  font-size:clamp(48px,6vw,80px);
+  letter-spacing:0.04em;
+  line-height:1;
+  color:var(--white);margin-bottom:24px;
+}
+.contact-text{
+  font-size:15px;color:var(--silver3);
+  line-height:1.8;font-weight:300;margin-bottom:40px;
+}
+.contact-items{display:flex;flex-direction:column;gap:12px}
+.contact-item{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;
+  background:rgba(8,8,8,0.7);
+  border:1px solid rgba(192,192,192,0.07);
+  border-radius:8px;text-decoration:none;
+  transition:all 0.3s;
+}
+.contact-item:hover{
+  border-color:rgba(192,192,192,0.2);
+  background:rgba(24,24,24,0.9);
+}
+.contact-item-icon{
+  width:36px;height:36px;
+  background:rgba(192,192,192,0.07);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.contact-item-label{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:0.1em;color:var(--silver3);
+  text-transform:uppercase;margin-bottom:3px;
+}
+.contact-item-value{font-size:13px;color:var(--white);font-weight:500}
+
+/* Contact form */
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-label{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--silver3);
+}
+.form-input{
+  background:rgba(8,8,8,0.8);
+  border:1px solid rgba(192,192,192,0.1);
+  border-radius:6px;padding:12px 16px;
+  font-size:14px;color:var(--white);
+  font-family:var(--body);
+  outline:none;transition:border-color 0.2s;
+  cursor:none;
+}
+.form-input:focus{border-color:rgba(192,192,192,0.35)}
+.form-input::placeholder{color:var(--silver4)}
+textarea.form-input{resize:vertical;min-height:120px}
+
+/* Footer */
+footer{
+  padding:32px 4rem;
+  border-top:1px solid rgba(192,192,192,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-name{
+  font-family:var(--display);font-size:18px;
+  letter-spacing:0.1em;color:var(--silver3);
+}
+.footer-copy{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver4);letter-spacing:0.08em;
+}
+.footer-links{display:flex;gap:20px}
+.footer-links a{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver3);text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--white)}
+
+/* Animations */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.reveal{
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s,transform 0.8s;
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Status badge */
+.status-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:11px;
+  color:#6ee7b7;letter-spacing:0.08em;
+  background:rgba(110,231,183,0.07);
+  border:1px solid rgba(110,231,183,0.15);
+  border-radius:20px;padding:5px 14px;
+  margin-bottom:24px;
+}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#6ee7b7;
+  animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink{
+  0%,100%{opacity:1}50%{opacity:0.3}
+}
+
+/* Noise overlay */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9997;opacity:0.3;
+}
+
+/* Loading screen */
+#loader{
+  position:fixed;inset:0;background:var(--black);
+  z-index:99999;display:flex;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:24px;
+  transition:opacity 0.6s;
+}
+.loader-name{
+  font-family:var(--display);font-size:40px;
+  letter-spacing:0.15em;color:var(--silver);
+}
+.loader-bar-wrap{
+  width:200px;height:1px;
+  background:rgba(192,192,192,0.1);
+  overflow:hidden;
+}
+.loader-bar{
+  height:100%;
+  background:linear-gradient(90deg,transparent,var(--silver),transparent);
+  animation:loadBar 1.6s ease-in-out forwards;
+  transform-origin:left;
+}
+@keyframes loadBar{
+  from{transform:scaleX(0);opacity:0}
+  50%{opacity:1}
+  to{transform:scaleX(1);opacity:0}
+}
+.loader-text{
+  font-family:var(--mono);font-size:11px;
+  color:var(--silver4);letter-spacing:0.15em;
+  text-transform:uppercase;
+}
+
+@media(max-width:900px){
+  nav{padding:0 2rem}
+  .hero-content{grid-template-columns:1fr;padding:0 2rem}
+  .hero-right{height:350px}
+  #about,#skills,#projects,#experience,#certifications,#contact{padding:80px 2rem}
+  .about-grid{grid-template-columns:1fr;gap:48px}
+  .projects-grid{grid-template-columns:1fr}
+  .contact-inner{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:16px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-name">ARYAN GUPTA</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-text">Loading portfolio</div>
+</div>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">AG</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Courses</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="page" id="hero">
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        Open to opportunities
+      </div>
+      <div class="hero-eyebrow">Full-Stack & iOS Developer</div>
+      <h1 class="hero-name">
+        <span>ARYAN</span>
+        <span>GUPTA</span>
+      </h1>
+      <p class="hero-role">B.Tech CSE (AI/ML) · Chandigarh University · 2025</p>
+      <p class="hero-desc">
+        Building intuitive digital experiences — from elegant iOS apps to scalable web platforms. Passionate about clean architecture, real-time systems, and turning complex ideas into working software.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn-silver">View Projects</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <canvas id="model-canvas"></canvas>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ====== ABOUT ====== -->
+<section class="page" id="about">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">ABOUT ME</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        I'm <strong>Aryan Gupta</strong>, a Computer Science graduate specializing in <strong>Artificial Intelligence and Machine Learning</strong> from Chandigarh University (CGPA 7.76). I build things that work — and look good doing it.
+      </p>
+      <p>
+        My stack spans the full spectrum: <strong>Swift & SwiftUI</strong> for sleek iOS apps, <strong>React & Next.js</strong> for modern web experiences, and Python for intelligent back-end systems. I care deeply about UI/UX and the details that make software feel great.
+      </p>
+      <p>
+        Beyond code, I've volunteered with <strong>Robin Hood Army</strong>, led fundraising campaigns, and continuously invested in my craft through certifications in iOS development, web development, and machine learning.
+      </p>
+      <div class="about-details">
+        <div class="detail-item">
+          <div class="detail-label">Location</div>
+          <div class="detail-value">Noida, India</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Degree</div>
+          <div class="detail-value">B.Tech CSE (AI/ML)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">ag980455 [at] gmail.com</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Phone</div>
+          <div class="detail-value">+91-9118760150</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="section-num" style="margin-bottom:20px;font-size:12px">EDUCATION</div>
+      <div class="education-cards">
+        <div class="edu-card">
+          <div class="edu-degree">B.Tech — Computer Science (AI/ML)</div>
+          <div class="edu-school">Chandigarh University, Gharuan, Mohali</div>
+          <div class="edu-meta">
+            <span>2021 – 2025</span>
+            <span class="edu-cgpa">CGPA: 7.76</span>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Senior Secondary</div>
+          <div class="edu-school">ICSE Board</div>
+          <div class="edu-meta">
+            <span>2021</span>
+            <span class="edu-cgpa">81%</span>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Secondary</div>
+          <div class="edu-school">ICSE Board</div>
+          <div class="edu-meta">
+            <span>2019</span>
+            <span class="edu-cgpa">73%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SKILLS ====== -->
+<section class="page" id="skills">
+  <canvas id="skills-canvas"></canvas>
+  <div class="skills-inner">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">SKILLS</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Swift</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">HTML</span>
+          <span class="skill-tag">CSS</span>
+          <span class="skill-tag">SQL</span>
+        </div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Frameworks & Libraries</div>
+        <div class="skill-tags">
+          <span class="skill-tag">React.js</span>
+          <span class="skill-tag">Next.js</span>
+          <span class="skill-tag">SwiftUI</span>
+          <span class="skill-tag">TailwindCSS</span>
+          <span class="skill-tag">Bootstrap</span>
+          <span class="skill-tag">ShadCN</span>
+          <span class="skill-tag">TanStack Query</span>
+        </div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">iOS Development</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Xcode</span>
+          <span class="skill-tag">Core Location</span>
+          <span class="skill-tag">MLKit</span>
+          <span class="skill-tag">CoreML</span>
+          <span class="skill-tag">Swift</span>
+          <span class="skill-tag">SwiftUI</span>
+        </div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Backend & Databases</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Appwrite</span>
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">Cloud API</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">DBMS</span>
+        </div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Tools & Platforms</div>
+        <div class="skill-tags">
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Blender</span>
+          <span class="skill-tag">Xcode</span>
+        </div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">CS Fundamentals</div>
+        <div class="skill-tags">
+          <span class="skill-tag">DBMS</span>
+          <span class="skill-tag">Operating Systems</span>
+          <span class="skill-tag">Computer Networks</span>
+          <span class="skill-tag">OOP</span>
+          <span class="skill-tag">UI/UX</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== PROJECTS ====== -->
+<section class="page" id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+
+    <!-- Axiom Pulse Clone -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj1-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">Web Application · Clone</div>
+        <div class="project-name">Axiom Pulse Clone</div>
+        <div class="project-desc">A clone of the Axiom Trade Pulse dashboard for real-time crypto token discovery and analytics, with a trading-style responsive UI.</div>
+        <ul class="project-highlights">
+          <li>Built a clone of Axiom Trade Pulse dashboard for real-time crypto token discovery and analytics</li>
+          <li>Developed a responsive trading-style dashboard UI for monitoring token activity and market signals</li>
+          <li>Implemented a scalable frontend and deployed on Vercel for fast performance</li>
+        </ul>
+        <div class="project-stack">
+          <span>React</span><span>TypeScript</span><span>Next.js</span>
+          <span>21st.dev</span><span>Vercel</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://axiom-pulse-clone-psi.vercel.app/pulse" target="_blank">Live Demo ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SnapGram -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj2-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">Web Application</div>
+        <div class="project-name">SnapGram</div>
+        <div class="project-desc">A full-featured social platform with real-time messaging, personalized ambient UI, and scalable architecture.</div>
+        <ul class="project-highlights">
+          <li>Real-time messaging with instant delivery between users</li>
+          <li>Personalized ambient lighting UI that adapts to user content</li>
+          <li>Scalable back-end powered by Appwrite BaaS</li>
+        </ul>
+        <div class="project-stack">
+          <span>React.js</span><span>TypeScript</span>
+          <span>TailwindCSS</span><span>ShadCN</span><span>Appwrite</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://github.com/HAFFIC001" target="_blank">View on GitHub ↗</a>
+          <a class="proj-link" href="http://localhost:5173/sign-up" target="_blank">Live Demo ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Threads-like Social App (iOS) -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj3-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">iOS Application</div>
+        <div class="project-name">Threads Clone</div>
+        <div class="project-desc">A native iOS social app inspired by Meta Threads — built for fluid text-based conversations, real-time feeds, and a minimal content-first experience.</div>
+        <ul class="project-highlights">
+          <li>Designed a clean, content-first feed UI mirroring the Threads experience on iOS</li>
+          <li>Implemented user authentication, post creation, replies, and follow system</li>
+          <li>Built with SwiftUI for smooth native animations and gesture-driven interactions</li>
+          <li>Structured with MVVM architecture for clean separation of concerns</li>
+        </ul>
+        <div class="project-stack">
+          <span>Swift</span><span>SwiftUI</span><span>Xcode</span>
+          <span>Firebase</span><span>MVVM</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://github.com/HAFFIC001" target="_blank">View on GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- APOD NASA iOS App -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj4-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">iOS Application</div>
+        <div class="project-name">APOD — NASA Astronomy</div>
+        <div class="project-desc">An iOS app that surfaces NASA's Astronomy Picture of the Day — bringing the cosmos to your pocket with stunning imagery and scientific context, every single day.</div>
+        <ul class="project-highlights">
+          <li>Integrated NASA's official APOD API to fetch daily astronomy images and explanations</li>
+          <li>Built a visually immersive full-screen image viewer with pinch-to-zoom and share functionality</li>
+          <li>Implemented date-picker navigation to browse the entire APOD archive</li>
+          <li>Added offline caching so previously viewed images load without internet</li>
+        </ul>
+        <div class="project-stack">
+          <span>Swift</span><span>SwiftUI</span><span>Xcode</span>
+          <span>NASA APOD API</span><span>URLSession</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://github.com/HAFFIC001" target="_blank">View on GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Document Scanner iOS App -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj5-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">iOS Application</div>
+        <div class="project-name">DocScan — Document Scanner</div>
+        <div class="project-desc">A powerful iOS document scanning app that turns your camera into a portable office scanner — capturing, cropping, enhancing, and exporting documents as crisp PDFs in seconds.</div>
+        <ul class="project-highlights">
+          <li>Leveraged VisionKit's VNDocumentCameraViewController for automatic edge detection and perspective correction</li>
+          <li>Implemented multi-page scanning with real-time preview and reordering before export</li>
+          <li>Added image enhancement filters — B&W, greyscale, and colour modes for scan quality control</li>
+          <li>Built one-tap PDF export and sharing via native iOS share sheet</li>
+        </ul>
+        <div class="project-stack">
+          <span>Swift</span><span>SwiftUI</span><span>VisionKit</span>
+          <span>PDFKit</span><span>Xcode</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://github.com/HAFFIC001" target="_blank">View on GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Number Match Puzzle Game -->
+    <div class="project-card reveal">
+      <div class="project-visual">
+        <canvas class="project-3d-canvas" id="proj6-canvas"></canvas>
+      </div>
+      <div class="project-body">
+        <div class="project-label">Mobile Game · React Native</div>
+        <div class="project-name">Number Match Puzzle</div>
+        <div class="project-desc">A Number Match–style puzzle game inspired by "Number Master" — clear the grid by matching numbers that are equal or sum to 10, across escalating levels with timers and tactical row mechanics.</div>
+        <ul class="project-highlights">
+          <li>Match logic: two cells clear when equal or their sum equals 10</li>
+          <li>Three levels with unique grid sizes and progressively harder number distributions</li>
+          <li>2-minute countdown timer per level with Add Row mechanic (limited uses)</li>
+          <li>Matched cells fade out instead of disappearing — invalid moves trigger shake animation</li>
+          <li>Clean architecture: pure game logic (logic.ts), reusable Cell component, level configs (levels.ts)</li>
+          <li>Expo-based — runs on iOS Simulator, Android Emulator, or via Expo Go QR scan</li>
+        </ul>
+        <div class="project-stack">
+          <span>React Native</span><span>TypeScript</span><span>Expo</span>
+          <span>Reanimated</span><span>Gesture Handler</span>
+        </div>
+        <div class="project-links">
+          <a class="proj-link" href="https://github.com/HAFFIC001" target="_blank">View on GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====== COURSES ====== -->
+<section class="page" id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">COURSES</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-meta">Oct 2023 – Present · Remote</div>
+      <div class="timeline-title">iOS Development Course</div>
+      <div class="timeline-org">Udemy</div>
+      <ul class="timeline-list">
+        <li>Focused on Xcode, Swift, and SwiftUI for production-grade iOS development</li>
+        <li>Led to a 30% increase in course subscriptions within two months by enhancing content quality</li>
+        <li>Addressed complex Swift/SwiftUI issues, boosting programming efficiency by 60%</li>
+        <li>Conducted code reviews and implemented performance optimizations, reducing error rates by 35%</li>
+      </ul>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-meta">Mar 2023 – Sep 2023 · Remote</div>
+      <div class="timeline-title">Web Development Project</div>
+      <div class="timeline-org">Udemy</div>
+      <ul class="timeline-list">
+        <li>Built internal back-end systems with SQL to manage overtime requests for 2,000+ employees</li>
+        <li>Created interactive graphs and logs in HTML/JS/Bootstrap tracking 6,000+ monthly requests</li>
+        <li>Optimized SQL queries, reducing report load times from 10s to 3s — 60% efficiency gain</li>
+        <li>Utilized JavaScript, SQL, HTML, CSS, and Bootstrap throughout the project</li>
+      </ul>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-meta">Volunteering · During COVID-19</div>
+      <div class="timeline-title">Fundraising Intern</div>
+      <div class="timeline-org">Robin Hood Army</div>
+      <ul class="timeline-list">
+        <li>Led fundraising efforts to provide relief to impoverished communities</li>
+        <li>Raised ₹5,000 and exceeded financial targets by 25% through strategic community engagement</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CERTIFICATIONS ====== -->
+<section class="page" id="certifications">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">CERTIFICATIONS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="certs-grid">
+    <div class="cert-card reveal">
+      <div class="cert-icon">🍎</div>
+      <div class="cert-info">
+        <div class="cert-name">iOS Development</div>
+        <div class="cert-org">Udemy · Swift & SwiftUI</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🌐</div>
+      <div class="cert-info">
+        <div class="cert-name">Intro to Web Development</div>
+        <div class="cert-org">Udemy · HTML, CSS, JavaScript</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">📊</div>
+      <div class="cert-info">
+        <div class="cert-name">Introduction to Microsoft Excel</div>
+        <div class="cert-org">Coursera</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🧠</div>
+      <div class="cert-info">
+        <div class="cert-name">Machine Learning Specialization</div>
+        <div class="cert-org">Coursera · Andrew Ng</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CONTACT ====== -->
+<section class="page" id="contact">
+  <canvas id="contact-canvas"></canvas>
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="contact-big">LET'S<br>CONNECT</div>
+      <p class="contact-text">
+        I'm actively seeking my first full-time role. Whether you have an opportunity, a project to collaborate on, or just want to connect — reach out.
+      </p>
+      <div class="contact-items">
+        <a class="contact-item" href="mailto:ag980455@gmail.com">
+          <div class="contact-item-icon">✉</div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value">ag980455@gmail.com</div>
+          </div>
+        </a>
+        <a class="contact-item" href="tel:+919118760150">
+          <div class="contact-item-icon">📱</div>
+          <div>
+            <div class="contact-item-label">Phone</div>
+            <div class="contact-item-value">+91-9118760150</div>
+          </div>
+        </a>
+        <a class="contact-item" href="https://github.com/HAFFIC001" target="_blank">
+          <div class="contact-item-icon">⌨</div>
+          <div>
+            <div class="contact-item-label">GitHub</div>
+            <div class="contact-item-value">github.com/HAFFIC001</div>
+          </div>
+        </a>
+        <a class="contact-item" href="https://linkedin.com/in/aryan-gupta-283063216" target="_blank">
+          <div class="contact-item-icon">💼</div>
+          <div>
+            <div class="contact-item-label">LinkedIn</div>
+            <div class="contact-item-value">aryan-gupta-283063216</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" type="text" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="you@company.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input class="form-input" type="text" placeholder="Job opportunity / Collaboration">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" placeholder="Tell me about the opportunity or project..."></textarea>
+      </div>
+      <button class="btn-silver" style="align-self:flex-start">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-name">ARYAN GUPTA</div>
+  <div class="footer-copy">© 2025 · All rights reserved</div>
+  <div class="footer-links">
+    <a href="https://github.com/HAFFIC001" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/in/aryan-gupta-283063216" target="_blank">LinkedIn</a>
+    <a href="mailto:ag980455@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+// ── LOADER: dismiss immediately via multiple safety nets ──────────────────
+function dismissLoader() {
+  var el = document.getElementById('loader');
+  if (!el) return;
+  el.style.transition = 'opacity 0.6s';
+  el.style.opacity = '0';
+  setTimeout(function(){ el.style.display = 'none'; }, 650);
+}
+// Fire at 1.2 s regardless of anything else
+setTimeout(dismissLoader, 1200);
+// Also fire on window load as a backup
+window.addEventListener('load', function(){ setTimeout(dismissLoader, 200); });
+
+// ── CURSOR ────────────────────────────────────────────────────────────────
+var cursor = document.getElementById('cursor');
+var follower = document.getElementById('cursor-follower');
+var fx = 0, fy = 0, cx = 0, cy = 0;
+document.addEventListener('mousemove', function(e) {
+  cx = e.clientX; cy = e.clientY;
+  if (cursor) { cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; }
+});
+function animFollower() {
+  fx += (cx - fx) * 0.12;
+  fy += (cy - fy) * 0.12;
+  if (follower) { follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
+  requestAnimationFrame(animFollower);
+}
+animFollower();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────
+var reveals = document.querySelectorAll('.reveal');
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.08 });
+reveals.forEach(function(el) { revealObserver.observe(el); });
+
+// ── THREE.JS helpers ───────────────────────────────────────────────────────
+function makeRenderer(canvas) {
+  return new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+}
+function setSize(renderer, camera, canvas) {
+  var w = canvas.offsetWidth || canvas.clientWidth || 600;
+  var h = canvas.offsetHeight || canvas.clientHeight || 400;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+// ── HERO BG: particle field + wireframe icosphere ─────────────────────────
+try {
+  var c0 = document.getElementById('three-canvas');
+  if (c0) {
+    var r0 = makeRenderer(c0);
+    r0.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var s0 = new THREE.Scene();
+    var cam0 = new THREE.PerspectiveCamera(60, 2, 0.1, 1000);
+    cam0.position.z = 5;
+    setSize(r0, cam0, c0);
+    window.addEventListener('resize', function(){ setSize(r0, cam0, c0); });
+
+    var geo0 = new THREE.BufferGeometry();
+    var arr0 = new Float32Array(6000);
+    for (var i = 0; i < 6000; i++) arr0[i] = (Math.random() - 0.5) * 20;
+    geo0.setAttribute('position', new THREE.BufferAttribute(arr0, 3));
+    var pts0 = new THREE.Points(geo0, new THREE.PointsMaterial({ color: 0xc0c0c0, size: 0.03, transparent: true, opacity: 0.5 }));
+    s0.add(pts0);
+
+    var wfMesh = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(2.5, 1),
+      new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true, transparent: true, opacity: 0.15 })
+    );
+    s0.add(wfMesh);
+
+    var mx0 = 0, my0 = 0;
+    document.addEventListener('mousemove', function(e) {
+      mx0 = (e.clientX / innerWidth - 0.5) * 2;
+      my0 = (e.clientY / innerHeight - 0.5) * 2;
+    });
+    (function loop0() {
+      requestAnimationFrame(loop0);
+      pts0.rotation.y += 0.0004; pts0.rotation.x += 0.0002;
+      wfMesh.rotation.y += 0.003; wfMesh.rotation.x += 0.001;
+      cam0.position.x += (mx0 * 0.5 - cam0.position.x) * 0.02;
+      cam0.position.y += (-my0 * 0.5 - cam0.position.y) * 0.02;
+      r0.render(s0, cam0);
+    })();
+  }
+} catch(e) { console.warn('hero-bg 3d error', e); }
+
+// ── HERO MODEL: metallic torus knot ───────────────────────────────────────
+try {
+  var c1 = document.getElementById('model-canvas');
+  if (c1) {
+    var r1 = makeRenderer(c1);
+    r1.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var s1 = new THREE.Scene();
+    var cam1 = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    cam1.position.z = 5;
+    setSize(r1, cam1, c1);
+    window.addEventListener('resize', function(){ setSize(r1, cam1, c1); });
+
+    s1.add(new THREE.AmbientLight(0xffffff, 0.3));
+    var pl1a = new THREE.PointLight(0xc0c0c0, 2, 20); pl1a.position.set(3,3,3); s1.add(pl1a);
+    var pl1b = new THREE.PointLight(0x808080, 1.5, 20); pl1b.position.set(-3,-2,-3); s1.add(pl1b);
+
+    var tk = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(1.3, 0.35, 200, 20, 2, 3),
+      new THREE.MeshStandardMaterial({ color: 0x181818, metalness: 1, roughness: 0.15 })
+    );
+    s1.add(tk);
+    var tkWf = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(1.32, 0.35, 80, 10, 2, 3),
+      new THREE.MeshBasicMaterial({ color: 0x606060, wireframe: true, transparent: true, opacity: 0.18 })
+    );
+    s1.add(tkWf);
+
+    var ring1 = new THREE.Mesh(
+      new THREE.TorusGeometry(2.2, 0.008, 4, 100),
+      new THREE.MeshBasicMaterial({ color: 0x606060, transparent: true, opacity: 0.5 })
+    );
+    ring1.rotation.x = Math.PI / 2.5;
+    s1.add(ring1);
+
+    var dotGrp = new THREE.Group();
+    for (var d = 0; d < 12; d++) {
+      var da = (d / 12) * Math.PI * 2;
+      var dot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0x909090, transparent: true, opacity: 0.7 })
+      );
+      dot.position.set(Math.cos(da) * 2.2, 0, Math.sin(da) * 2.2);
+      dotGrp.add(dot);
+    }
+    dotGrp.rotation.x = Math.PI / 2.5;
+    s1.add(dotGrp);
+
+    var t1 = 0, mx1 = 0, my1 = 0;
+    document.addEventListener('mousemove', function(e) {
+      mx1 = (e.clientX / innerWidth - 0.5);
+      my1 = (e.clientY / innerHeight - 0.5);
+    });
+    (function loop1() {
+      requestAnimationFrame(loop1);
+      t1 += 0.008;
+      tk.rotation.x += 0.006; tk.rotation.y += 0.01;
+      tkWf.rotation.x = tk.rotation.x; tkWf.rotation.y = tk.rotation.y;
+      ring1.rotation.z += 0.004; dotGrp.rotation.z += 0.004;
+      tk.position.y = Math.sin(t1) * 0.1;
+      cam1.position.x += (mx1 * 1.5 - cam1.position.x) * 0.04;
+      cam1.position.y += (-my1 - cam1.position.y) * 0.04;
+      cam1.lookAt(0, 0, 0);
+      r1.render(s1, cam1);
+    })();
+  }
+} catch(e) { console.warn('hero-model 3d error', e); }
+
+// ── SKILLS BG: drifting wireframe cubes ───────────────────────────────────
+try {
+  var cSk = document.getElementById('skills-canvas');
+  if (cSk) {
+    var rSk = makeRenderer(cSk);
+    rSk.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sSk = new THREE.Scene();
+    var camSk = new THREE.PerspectiveCamera(50, 2, 0.1, 1000);
+    camSk.position.z = 6;
+    setSize(rSk, camSk, cSk);
+    window.addEventListener('resize', function(){ setSize(rSk, camSk, cSk); });
+
+    var cubes = [];
+    for (var ci = 0; ci < 30; ci++) {
+      var cs = 0.08 + Math.random() * 0.2;
+      var cm = new THREE.Mesh(
+        new THREE.BoxGeometry(cs, cs, cs),
+        new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true, transparent: true, opacity: 0.3 + Math.random() * 0.3 })
+      );
+      cm.position.set((Math.random()-0.5)*14, (Math.random()-0.5)*8, (Math.random()-0.5)*6);
+      cm.userData = { ry: (Math.random()-0.5)*0.01, rx: (Math.random()-0.5)*0.01 };
+      sSk.add(cm); cubes.push(cm);
+    }
+    (function loopSk() {
+      requestAnimationFrame(loopSk);
+      cubes.forEach(function(c){ c.rotation.y += c.userData.ry; c.rotation.x += c.userData.rx; });
+      rSk.render(sSk, camSk);
+    })();
+  }
+} catch(e) { console.warn('skills-bg 3d error', e); }
+
+// ── PROJECT 1: Axiom Pulse — glowing crypto grid ──────────────────────────
+try {
+  var cp1 = document.getElementById('proj1-canvas');
+  if (cp1) {
+    var rp1 = makeRenderer(cp1);
+    rp1.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sp1 = new THREE.Scene();
+    var camp1 = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+    camp1.position.z = 3.5;
+    setSize(rp1, camp1, cp1);
+    window.addEventListener('resize', function(){ setSize(rp1, camp1, cp1); });
+
+    sp1.add(new THREE.AmbientLight(0xffffff, 0.4));
+    var lp1 = new THREE.PointLight(0xdddddd, 3, 20); lp1.position.set(2,2,2); sp1.add(lp1);
+
+    // Grid of lines (trading chart look)
+    var gridGrp = new THREE.Group();
+    for (var gi = 0; gi < 8; gi++) {
+      var gx = (gi / 7) * 3 - 1.5;
+      var gpts = [new THREE.Vector3(gx, -0.8, 0), new THREE.Vector3(gx, 0.8, 0)];
+      gridGrp.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(gpts),
+        new THREE.LineBasicMaterial({ color: 0x303030, transparent: true, opacity: 0.5 })
+      ));
+    }
+    for (var gj = 0; gj < 5; gj++) {
+      var gy = (gj / 4) * 1.6 - 0.8;
+      var ghpts = [new THREE.Vector3(-1.5, gy, 0), new THREE.Vector3(1.5, gy, 0)];
+      gridGrp.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(ghpts),
+        new THREE.LineBasicMaterial({ color: 0x303030, transparent: true, opacity: 0.5 })
+      ));
+    }
+    // Candlestick-like bars
+    var barHeights = [0.3, 0.5, 0.2, 0.7, 0.4, 0.8, 0.6, 0.9];
+    barHeights.forEach(function(bh, bi) {
+      var bx = (bi / 7) * 3 - 1.5;
+      var bar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, bh, 0.08),
+        new THREE.MeshStandardMaterial({ color: bi % 2 === 0 ? 0x707070 : 0x404040, metalness: 0.5, roughness: 0.5 })
+      );
+      bar.position.set(bx, bh / 2 - 0.8, 0);
+      gridGrp.add(bar);
+    });
+    sp1.add(gridGrp);
+
+    var tp1 = 0;
+    (function loopp1() {
+      requestAnimationFrame(loopp1);
+      tp1 += 0.007;
+      gridGrp.rotation.y = Math.sin(tp1 * 0.4) * 0.3;
+      gridGrp.rotation.x = Math.sin(tp1 * 0.3) * 0.1;
+      rp1.render(sp1, camp1);
+    })();
+  }
+} catch(e) { console.warn('proj1 3d error', e); }
+
+// ── PROJECT 2: SnapGram — network nodes ───────────────────────────────────
+try {
+  var cp2 = document.getElementById('proj2-canvas');
+  if (cp2) {
+    var rp2 = makeRenderer(cp2);
+    rp2.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sp2 = new THREE.Scene();
+    var camp2 = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+    camp2.position.z = 3;
+    setSize(rp2, camp2, cp2);
+    window.addEventListener('resize', function(){ setSize(rp2, camp2, cp2); });
+
+    var grp2 = new THREE.Group();
+    sp2.add(grp2);
+    var nodes2 = [];
+    for (var ni = 0; ni < 10; ni++) {
+      var nm = new THREE.Mesh(
+        new THREE.SphereGeometry(0.05 + Math.random() * 0.06, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0.7 + Math.random() * 0.3 })
+      );
+      nm.position.set((Math.random()-0.5)*2.5, (Math.random()-0.5)*1.5, (Math.random()-0.5));
+      grp2.add(nm); nodes2.push(nm);
+    }
+    for (var na = 0; na < nodes2.length; na++) {
+      for (var nb = na + 1; nb < nodes2.length; nb++) {
+        if (Math.random() > 0.5) continue;
+        grp2.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([nodes2[na].position, nodes2[nb].position]),
+          new THREE.LineBasicMaterial({ color: 0x404040, transparent: true, opacity: 0.3 })
+        ));
+      }
+    }
+    var tp2 = 0;
+    (function loopp2() {
+      requestAnimationFrame(loopp2);
+      tp2 += 0.006;
+      grp2.rotation.y += 0.006;
+      grp2.rotation.x = Math.sin(tp2 * 0.5) * 0.2;
+      rp2.render(sp2, camp2);
+    })();
+  }
+} catch(e) { console.warn('proj2 3d error', e); }
+
+// ── PROJECT 3: Threads Clone — orbiting octahedron ─────────────────────────
+try {
+  var cp3 = document.getElementById('proj3-canvas');
+  if (cp3) {
+    var rp3 = makeRenderer(cp3);
+    rp3.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sp3 = new THREE.Scene();
+    var camp3 = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+    camp3.position.z = 3.5;
+    setSize(rp3, camp3, cp3);
+    window.addEventListener('resize', function(){ setSize(rp3, camp3, cp3); });
+
+    sp3.add(new THREE.AmbientLight(0xffffff, 0.3));
+    var lp3 = new THREE.PointLight(0xc0c0c0, 2.5, 20); lp3.position.set(2,3,2); sp3.add(lp3);
+
+    var grp3 = new THREE.Group();
+    sp3.add(grp3);
+
+    grp3.add(new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.65, 0),
+      new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.9, roughness: 0.15 })
+    ));
+    grp3.add(new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.67, 0),
+      new THREE.MeshBasicMaterial({ color: 0x707070, wireframe: true, transparent: true, opacity: 0.25 })
+    ));
+
+    var orbiters3 = [
+      { r: 1.4, speed: 0.012, phase: 0,   size: 0.10, tilt: 0.3 },
+      { r: 1.2, speed: 0.018, phase: 2.1, size: 0.07, tilt: -0.5 },
+      { r: 1.6, speed: 0.009, phase: 4.2, size: 0.09, tilt: 0.8 }
+    ];
+    orbiters3.forEach(function(o) {
+      o.mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(o.size, 12, 12),
+        new THREE.MeshStandardMaterial({ color: 0x909090, metalness: 0.6, roughness: 0.3 })
+      );
+      grp3.add(o.mesh);
+      o.angle = o.phase;
+    });
+
+    grp3.add(new THREE.Mesh(
+      new THREE.TorusGeometry(1.5, 0.006, 4, 80),
+      new THREE.MeshBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.4 })
+    )).rotation.x = 1.0;
+
+    var tp3 = 0;
+    (function loopp3() {
+      requestAnimationFrame(loopp3);
+      tp3 += 0.008;
+      grp3.children[0].rotation.y += 0.008;
+      grp3.children[0].rotation.x += 0.003;
+      grp3.rotation.y = Math.sin(tp3 * 0.3) * 0.3;
+      orbiters3.forEach(function(o) {
+        o.angle += o.speed;
+        o.mesh.position.set(Math.cos(o.angle)*o.r, Math.sin(o.angle*0.7+o.tilt)*0.4, Math.sin(o.angle)*o.r);
+      });
+      rp3.render(sp3, camp3);
+    })();
+  }
+} catch(e) { console.warn('proj3 3d error', e); }
+
+// ── PROJECT 4: APOD — planet with rings + stars ────────────────────────────
+try {
+  var cp4 = document.getElementById('proj4-canvas');
+  if (cp4) {
+    var rp4 = makeRenderer(cp4);
+    rp4.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sp4 = new THREE.Scene();
+    var camp4 = new THREE.PerspectiveCamera(50, 2, 0.1, 200);
+    camp4.position.z = 4;
+    setSize(rp4, camp4, cp4);
+    window.addEventListener('resize', function(){ setSize(rp4, camp4, cp4); });
+
+    var starArr = new Float32Array(1800);
+    for (var si = 0; si < 1800; si++) starArr[si] = (Math.random()-0.5)*40;
+    var starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starArr, 3));
+    sp4.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.06, transparent: true, opacity: 0.7 })));
+
+    sp4.add(new THREE.AmbientLight(0x222233, 1));
+    var sun4 = new THREE.PointLight(0xdde8ff, 4, 30); sun4.position.set(4,2,3); sp4.add(sun4);
+
+    var planet4 = new THREE.Mesh(
+      new THREE.SphereGeometry(0.8, 48, 48),
+      new THREE.MeshStandardMaterial({ color: 0x1a1a2e, metalness: 0.1, roughness: 0.85 })
+    );
+    sp4.add(planet4);
+
+    var ring4a = new THREE.Mesh(
+      new THREE.TorusGeometry(1.25, 0.06, 3, 100),
+      new THREE.MeshBasicMaterial({ color: 0x606060, transparent: true, opacity: 0.35 })
+    );
+    ring4a.rotation.x = Math.PI / 2.4; sp4.add(ring4a);
+
+    var ring4b = new THREE.Mesh(
+      new THREE.TorusGeometry(1.55, 0.025, 3, 100),
+      new THREE.MeshBasicMaterial({ color: 0x404040, transparent: true, opacity: 0.2 })
+    );
+    ring4b.rotation.x = Math.PI / 2.4; sp4.add(ring4b);
+
+    var moon4 = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 12, 12),
+      new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.4, roughness: 0.6 })
+    );
+    sp4.add(moon4);
+
+    var tp4 = 0;
+    (function loopp4() {
+      requestAnimationFrame(loopp4);
+      tp4 += 0.007;
+      planet4.rotation.y += 0.005;
+      moon4.position.set(Math.cos(tp4)*1.9, Math.sin(tp4*0.4)*0.2, Math.sin(tp4)*1.9);
+      rp4.render(sp4, camp4);
+    })();
+  }
+} catch(e) { console.warn('proj4 3d error', e); }
+
+// ── PROJECT 5: DocScan — stacked documents with scan line ─────────────────
+try {
+  var cp5 = document.getElementById('proj5-canvas');
+  if (cp5) {
+    var rp5 = makeRenderer(cp5);
+    rp5.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sp5 = new THREE.Scene();
+    var camp5 = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+    camp5.position.set(0, 0.5, 4);
+    setSize(rp5, camp5, cp5);
+    window.addEventListener('resize', function(){ setSize(rp5, camp5, cp5); });
+
+    sp5.add(new THREE.AmbientLight(0xffffff, 0.5));
+    var lp5 = new THREE.PointLight(0xdddddd, 3, 20); lp5.position.set(3,4,3); sp5.add(lp5);
+
+    var grp5 = new THREE.Group(); sp5.add(grp5);
+    var sheetData = [
+      { y:-0.3, ry:0.25,  col:0x1a1a1a },
+      { y: 0.0, ry:0.08,  col:0x222222 },
+      { y: 0.3, ry:-0.12, col:0x2e2e2e }
+    ];
+    var scanLine5;
+    sheetData.forEach(function(d, idx) {
+      var sheet = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 0.015, 1.8),
+        new THREE.MeshStandardMaterial({ color: d.col, metalness: 0.3, roughness: 0.7 })
+      );
+      sheet.position.y = d.y; sheet.rotation.y = d.ry;
+      grp5.add(sheet);
+      if (idx === 2) {
+        var sl = new THREE.Mesh(
+          new THREE.BoxGeometry(1.38, 0.003, 0.03),
+          new THREE.MeshBasicMaterial({ color: 0x909090, transparent: true, opacity: 0.6 })
+        );
+        sl.position.set(0, d.y + 0.012, 0);
+        grp5.add(sl);
+        scanLine5 = sl;
+      }
+    });
+    [[-.65,.32,-.85],[.65,.32,-.85],[-.65,.32,.85],[.65,.32,.85]].forEach(function(p) {
+      var dv = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.8 })
+      );
+      dv.position.set(p[0], p[1], p[2]); grp5.add(dv);
+    });
+
+    var tp5 = 0;
+    (function loopp5() {
+      requestAnimationFrame(loopp5);
+      tp5 += 0.008;
+      grp5.rotation.y = Math.sin(tp5 * 0.4) * 0.4;
+      grp5.rotation.x = Math.sin(tp5 * 0.25) * 0.15;
+      if (scanLine5) scanLine5.position.z = Math.sin(tp5 * 1.5) * 0.85;
+      rp5.render(sp5, camp5);
+    })();
+  }
+} catch(e) { console.warn('proj5 3d error', e); }
+
+// ── PROJECT 6+ canvas fallbacks (wireframe cube) ──────────────────────────
+['proj6-canvas','proj7-canvas','proj8-canvas'].forEach(function(id) {
+  try {
+    var cx = document.getElementById(id);
+    if (!cx) return;
+    var rx = makeRenderer(cx);
+    rx.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sx = new THREE.Scene();
+    var camx = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+    camx.position.z = 3;
+    setSize(rx, camx, cx);
+    window.addEventListener('resize', function(){ setSize(rx, camx, cx); });
+    sx.add(new THREE.AmbientLight(0xffffff, 0.4));
+    var lx = new THREE.PointLight(0xdddddd, 2, 20); lx.position.set(2,2,2); sx.add(lx);
+    var mesh = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.8, 1),
+      new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.8, roughness: 0.2 })
+    );
+    sx.add(mesh);
+    sx.add(new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.82, 1),
+      new THREE.MeshBasicMaterial({ color: 0x606060, wireframe: true, transparent: true, opacity: 0.2 })
+    ));
+    var tx = 0;
+    (function loopx() {
+      requestAnimationFrame(loopx);
+      tx += 0.008;
+      mesh.rotation.y += 0.01; mesh.rotation.x += 0.005;
+      mesh.position.y = Math.sin(tx) * 0.08;
+      rx.render(sx, camx);
+    })();
+  } catch(e) { console.warn(id + ' 3d error', e); }
+});
+
+// ── CONTACT BG: DNA helix ─────────────────────────────────────────────────
+try {
+  var cCon = document.getElementById('contact-canvas');
+  if (cCon) {
+    var rCon = makeRenderer(cCon);
+    rCon.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sCon = new THREE.Scene();
+    var camCon = new THREE.PerspectiveCamera(50, 2, 0.1, 1000);
+    camCon.position.z = 8;
+    setSize(rCon, camCon, cCon);
+    window.addEventListener('resize', function(){ setSize(rCon, camCon, cCon); });
+
+    var helixGrp = new THREE.Group();
+    for (var hi = 0; hi < 120; hi++) {
+      var ht = (hi / 120) * Math.PI * 8;
+      var hr = 1.5;
+      var hs1 = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 6, 6),
+        new THREE.MeshBasicMaterial({ color: 0x606060, transparent: true, opacity: 0.6 })
+      );
+      hs1.position.set(Math.cos(ht)*hr, (hi/120)*10-5, Math.sin(ht)*hr);
+      helixGrp.add(hs1);
+      var hs2 = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 6, 6),
+        new THREE.MeshBasicMaterial({ color: 0x404040, transparent: true, opacity: 0.5 })
+      );
+      hs2.position.set(Math.cos(ht+Math.PI)*hr, (hi/120)*10-5, Math.sin(ht+Math.PI)*hr);
+      helixGrp.add(hs2);
+      if (hi % 5 === 0) {
+        helixGrp.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([hs1.position.clone(), hs2.position.clone()]),
+          new THREE.LineBasicMaterial({ color: 0x353535, transparent: true, opacity: 0.4 })
+        ));
+      }
+    }
+    sCon.add(helixGrp);
+    (function loopCon() {
+      requestAnimationFrame(loopCon);
+      helixGrp.rotation.y += 0.003;
+      rCon.render(sCon, camCon);
+    })();
+  }
+} catch(e) { console.warn('contact-bg 3d error', e); }
+</script>
+</body>
+</html>
